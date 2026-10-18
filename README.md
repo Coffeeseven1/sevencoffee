@@ -1,13 +1,23 @@
-# SEVEN Cafe & Games V9 — Admin Password + Math CAPTCHA
+# SEVEN Cafe & Games V9.1 — Admin login route fix
 
-- `/admin` requires the Cloudflare Worker Secret `ADMIN_PASSWORD` and redirects unauthenticated visitors to `/admin/login`.
-- Login includes a random arithmetic CAPTCHA. The answer is encrypted in a short-lived token and is not sent to the browser in plain text.
-- Successful login creates an 8-hour signed `HttpOnly; Secure; SameSite=Strict` cookie session.
-- The admin screen includes a secure logout button.
+IMPORTANT: This ZIP is FLAT. `wrangler.toml`, `src/`, and `public/` are directly at the ZIP root. Do NOT upload the outer folder as a nested directory in your repository.
 
-## Deploy
-1. Cloudflare Workers & Pages → `sevencoffee` → Settings → Variables and Secrets: ensure `ADMIN_PASSWORD` is set as a **Secret** for **Production**. Never commit the password to GitHub.
-2. Keep `wrangler.toml`, `src/`, and `public/` together. Deploy with `npx wrangler deploy`.
-3. Visit `/admin`, enter the exact Secret value and solve the math question.
+## Why /admin/login showed the customer homepage
+That page indicates the deployed Worker did not run the new login-routing code, and/or Cloudflare deployed the wrong directory as static assets. The login HTML is `public/admin-login.html`; `src/index.js` must be the Worker entrypoint.
 
-Product data and uploaded photos remain in browser localStorage in this version, so they are not shared between devices. For production hardening, add Cloudflare rate limiting to `/api/admin/login` and a shared database/API for menu data.
+## Deploy correctly
+1. Extract this ZIP.
+2. Open the extracted folder. Confirm these are directly inside it: `wrangler.toml`, `src/index.js`, `public/index.html`, `public/admin-login.html`.
+3. Open a terminal in that exact folder and run: `npx wrangler deploy`
+4. Make sure Wrangler reports deployment of Worker `sevencoffee`.
+5. In Cloudflare dashboard, confirm this is the same Worker whose URL is `https://sevencoffee.coffeeseven.workers.dev`.
+6. Confirm the Production Secret `ADMIN_PASSWORD` is set on that Worker.
+7. Open `https://sevencoffee.coffeeseven.workers.dev/admin/login`. You should see the login form, not the cafe homepage.
+
+If you deploy from Git integration rather than Wrangler CLI, set the root directory to the folder containing `wrangler.toml`, and configure the build/deploy command to use Wrangler. Do not deploy only the `public` directory as an assets-only site.
+
+## Security behavior
+- `/admin` requires a valid signed session and redirects to `/admin/login`.
+- `/api/admin/login` verifies the ADMIN_PASSWORD Secret and a short-lived encrypted random arithmetic CAPTCHA.
+- Successful login sets an HttpOnly, Secure, SameSite=Strict cookie for 8 hours.
+- Existing menu data remains browser-local; this login does not create shared storage.
