@@ -1,23 +1,21 @@
-# SEVEN Cafe & Games V9.1 — Admin login route fix
+# SEVEN Cafe & Games V9.2 — Admin route fix
 
-IMPORTANT: This ZIP is FLAT. `wrangler.toml`, `src/`, and `public/` are directly at the ZIP root. Do NOT upload the outer folder as a nested directory in your repository.
+## Fix for `/admin/login` showing the unstyled customer homepage
+Cloudflare's SPA asset fallback was serving `public/index.html` before the Worker handled `/admin/login`. The `run_worker_first` setting now routes `/admin`, `/admin/*`, and `/api/*` through `src/index.js` first.
 
-## Why /admin/login showed the customer homepage
-That page indicates the deployed Worker did not run the new login-routing code, and/or Cloudflare deployed the wrong directory as static assets. The login HTML is `public/admin-login.html`; `src/index.js` must be the Worker entrypoint.
-
-## Deploy correctly
+## Deploy the Worker configuration, not only static files
 1. Extract this ZIP.
-2. Open the extracted folder. Confirm these are directly inside it: `wrangler.toml`, `src/index.js`, `public/index.html`, `public/admin-login.html`.
-3. Open a terminal in that exact folder and run: `npx wrangler deploy`
-4. Make sure Wrangler reports deployment of Worker `sevencoffee`.
-5. In Cloudflare dashboard, confirm this is the same Worker whose URL is `https://sevencoffee.coffeeseven.workers.dev`.
-6. Confirm the Production Secret `ADMIN_PASSWORD` is set on that Worker.
-7. Open `https://sevencoffee.coffeeseven.workers.dev/admin/login`. You should see the login form, not the cafe homepage.
+2. Open a terminal in this exact extracted folder. It must directly contain `wrangler.toml`, `src/index.js`, and `public/`.
+3. Run `npx wrangler deploy`.
+4. Confirm the deploy output names Worker `sevencoffee` and succeeds.
+5. Confirm the Production Secret `ADMIN_PASSWORD` exists on this same Worker.
+6. Open `https://sevencoffee.coffeeseven.workers.dev/admin/login`. Expected: branded login form, password field, and random math question.
+7. If it still shows the homepage, Cloudflare is deploying a different Worker or only static assets. Confirm the deployment is for the `sevencoffee` Worker URL and that `wrangler.toml` is used.
 
-If you deploy from Git integration rather than Wrangler CLI, set the root directory to the folder containing `wrangler.toml`, and configure the build/deploy command to use Wrangler. Do not deploy only the `public` directory as an assets-only site.
+## Config
+- `main = "src/index.js"` is required so the Worker script runs.
+- Assets directory is `./public`, binding is `ASSETS`.
+- `run_worker_first` prevents SPA fallback from bypassing protected admin/API routes.
+- Keep `ADMIN_PASSWORD` as a Cloudflare Secret; never hardcode it.
 
-## Security behavior
-- `/admin` requires a valid signed session and redirects to `/admin/login`.
-- `/api/admin/login` verifies the ADMIN_PASSWORD Secret and a short-lived encrypted random arithmetic CAPTCHA.
-- Successful login sets an HttpOnly, Secure, SameSite=Strict cookie for 8 hours.
-- Existing menu data remains browser-local; this login does not create shared storage.
+Menu data remains browser-local; shared data across devices requires a database.
