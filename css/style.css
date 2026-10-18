@@ -15,3 +15,22 @@ body{margin:0;background:radial-gradient(ellipse at 50% -20%,#302016 0%,#171311 
 .final-price{margin-top:18px;padding:18px;border-radius:14px;background:linear-gradient(110deg,#d6282825,#f1c84b12);border:1px solid #d6282866;display:flex;align-items:center;justify-content:space-between;gap:15px}
 .final-price span{font-size:12px;color:#d7d0c3}.final-price strong{font-size:clamp(20px,3vw,28px);color:#f1c84b}
 @media(max-width:650px){.category-card{min-height:98px;padding:15px}.game-config{padding:15px}.choice-buttons{grid-template-columns:repeat(3,minmax(0,1fr))}.final-price{align-items:flex-start;flex-direction:column}}
+
+
+/* V6: Local image upload control */
+.image-url-field small{display:block;color:#89847b;font-size:11px;font-weight:400;margin-top:2px}
+.upload-card{border:1px dashed #f1c84b66!important;border-radius:16px;padding:18px;background:linear-gradient(135deg,#211b18 0%,#151515 72%)!important;position:relative;overflow:hidden}
+.upload-card:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#d62828,#f1c84b)}
+.upload-card-top{display:flex;align-items:center;gap:12px;margin-bottom:15px}
+.upload-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:13px;background:#d6282820;border:1px solid #f1c84b55;color:#f1c84b;font-size:25px;flex:0 0 auto}
+.upload-copy strong{display:block;color:#f5f0e7;font-size:13px;margin-bottom:5px}.upload-copy small{display:block;color:#aaa398;font-size:11px;line-height:1.8}
+.native-file-input{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important}
+.upload-button{display:flex!important;align-items:center;justify-content:center;gap:10px;width:100%;min-height:50px;padding:13px 16px;border-radius:12px;border:1px solid #f1c84b88;background:linear-gradient(100deg,#d6282826,#f1c84b12);color:#f1c84b;font-size:13px;font-weight:700;cursor:pointer;transition:transform .18s,border-color .18s,background .18s}
+.upload-button span{font-size:21px;line-height:1}.upload-button:hover{transform:translateY(-1px);border-color:#f1c84b;background:linear-gradient(100deg,#d628283b,#f1c84b20)}
+.native-file-input:focus-visible+.upload-button{outline:2px solid #f1c84b;outline-offset:3px}
+.file-name{margin-top:10px;color:#9f998f;font-size:11px;overflow-wrap:anywhere}
+.image-preview-wrap{display:flex;align-items:center;gap:14px;margin-top:15px;padding:12px;border:1px solid #ffffff17;border-radius:12px;background:#0e0e0e;flex-wrap:wrap}
+.image-preview-wrap img{width:110px;height:90px;object-fit:cover;border-radius:9px;border:1px solid #f1c84b66;background:#222}
+.remove-image-button{border:1px solid #d628286e;background:#d6282818;color:#ff8585;border-radius:10px;padding:10px 13px;font-size:11px;cursor:pointer}.remove-image-button:hover{background:#d6282830}
+.form-actions .primary-button{min-width:120px;font-weight:700;box-shadow:0 6px 18px #d6282828}.form-actions .back-button{min-width:120px;justify-content:center}
+@media(max-width:650px){.upload-card{padding:14px}.upload-button{font-size:12px}.image-preview-wrap img{width:88px;height:76px}.form-actions{display:grid;grid-template-columns:1fr 1fr}.form-actions button{width:100%}}

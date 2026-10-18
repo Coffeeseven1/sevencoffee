@@ -45,7 +45,14 @@
           <label>دسته<select id="itemCategory"></select></label>
           <label>نام محصول / بازی<input id="itemName" required placeholder="مثلاً قهوه یا PS5"></label>
           <label>قیمت پایه (تومان)<input id="itemPrice" type="number" min="0" placeholder="مثلاً 150000"></label>
-          <label class="full">آدرس عکس (URL)<input id="itemImage" type="url" placeholder="https://..."></label>
+          <label class="full image-url-field">آدرس عکس (URL)<input id="itemImage" type="url" placeholder="https://example.com/photo.jpg"><small>اگر لینک عکس داری، اینجا وارد کن؛ یا از دستگاه انتخابش کن.</small></label>
+          <div class="full upload-card" id="imageUploadCard">
+            <div class="upload-card-top"><span class="upload-icon">▧</span><div class="upload-copy"><strong>انتخاب تصویر از دستگاه</strong><small>فرمت‌های JPG، PNG، WEBP و GIF — تصویر برای ذخیره بهینه می‌شود.</small></div></div>
+            <input id="itemImageFile" class="native-file-input" type="file" accept="image/*">
+            <label for="itemImageFile" class="upload-button"><span>＋</span> انتخاب عکس از گوشی یا کامپیوتر</label>
+            <div id="imageFileName" class="file-name">هنوز تصویری انتخاب نشده</div>
+            <div id="imagePreviewWrap" class="image-preview-wrap hidden"><img id="imagePreview" alt="پیش‌نمایش تصویر انتخاب‌شده"><button type="button" class="remove-image-button" onclick="clearSelectedImage()">حذف تصویر انتخاب‌شده</button></div>
+          </div>
           <div id="gameRates" class="full game-rates"><strong>تعرفه گیم بر اساس ساعت (تومان)</strong><div class="rates-grid"><label>۱ ساعت<input id="rate1" type="number" min="0" placeholder="قیمت"></label><label>۲ ساعت<input id="rate2" type="number" min="0" placeholder="قیمت"></label><label>۳ ساعت<input id="rate3" type="number" min="0" placeholder="قیمت"></label><label>۴ ساعت<input id="rate4" type="number" min="0" placeholder="قیمت"></label><label>۵ ساعت<input id="rate5" type="number" min="0" placeholder="قیمت"></label></div></div>
         </div>
         <div class="form-actions"><button class="primary-button" type="submit">ذخیره</button><button class="back-button" type="button" onclick="resetForm()">پاک کردن فرم</button></div>
