@@ -1,20 +1,22 @@
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-
-    // Canonicalize /admin/ so relative CSS/JS paths resolve from the site root.
-    if (url.pathname === "/admin/") {
-      url.pathname = "/admin";
-      return Response.redirect(url.toString(), 301);
-    }
-
-    // Serve the single-page app at /admin while keeping /admin in the address bar.
-    if (url.pathname === "/admin") {
-      const assetUrl = new URL(request.url);
-      assetUrl.pathname = "/index.html";
-      return env.ASSETS.fetch(new Request(assetUrl.toString(), request));
-    }
-
-    return env.ASSETS.fetch(request);
-  }
-};
+const COOKIE="seven_admin", SESSION_SECONDS=8*60*60, CAPTCHA_SECONDS=180;
+const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...headers}});
+function b64u(bytes){let s="";for(const b of bytes)s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"")}
+function unb64u(s){s=s.replace(/-/g,"+").replace(/_/g,"/");s+="=".repeat((4-s.length%4)%4);return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
+async function key(secret,purpose,alg,usages){const raw=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(purpose+":"+secret));return crypto.subtle.importKey("raw",raw,alg,false,usages)}
+function rand(n){const x=new Uint32Array(1);crypto.getRandomValues(x);return x[0]%n}
+async function makeCaptcha(secret){let a=rand(10)+1,b=rand(10)+1,op="+",ans=a+b;if(rand(2)){if(b>a)[a,b]=[b,a];op="−";ans=a-b}const iv=crypto.getRandomValues(new Uint8Array(12));const k=await key(secret,"seven-captcha-v1",{name:"AES-GCM"},["encrypt"]);const payload=new TextEncoder().encode(JSON.stringify({answer:String(ans),exp:Date.now()+CAPTCHA_SECONDS*1000,nonce:b64u(crypto.getRandomValues(new Uint8Array(12)))}));const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,payload);return {question:`${a} ${op} ${b} = ؟`,token:b64u(iv)+"."+b64u(new Uint8Array(ct))}}
+async function checkCaptcha(secret,token,answer){try{const [iv,ct]=String(token||"").split(".");if(!iv||!ct)return false;const k=await key(secret,"seven-captcha-v1",{name:"AES-GCM"},["decrypt"]);const p=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64u(iv)},k,unb64u(ct));const d=JSON.parse(new TextDecoder().decode(p));return d.exp>Date.now()&&String(answer??"").trim()===d.answer}catch{return false}}
+async function passwordMatch(expected,supplied){const enc=new TextEncoder(),a=new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(String(expected)))),b=new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(String(supplied??""))));let d=0;for(let i=0;i<a.length;i++)d|=a[i]^b[i];return d===0}
+async function signSession(secret){const payload=b64u(new TextEncoder().encode(JSON.stringify({exp:Math.floor(Date.now()/1000)+SESSION_SECONDS,nonce:b64u(crypto.getRandomValues(new Uint8Array(16)))})));const k=await key(secret,"seven-session-v1",{name:"HMAC",hash:"SHA-256"},["sign"]);return payload+"."+b64u(new Uint8Array(await crypto.subtle.sign("HMAC",k,new TextEncoder().encode(payload))))}
+async function hasSession(req,secret){try{const c=req.headers.get("Cookie")||"",raw=c.split(";").map(x=>x.trim()).find(x=>x.startsWith(COOKIE+"="))?.slice(COOKIE.length+1);if(!raw)return false;const [p,s]=raw.split(".");if(!p||!s)return false;const k=await key(secret,"seven-session-v1",{name:"HMAC",hash:"SHA-256"},["verify"]);if(!await crypto.subtle.verify("HMAC",k,unb64u(s),new TextEncoder().encode(p)))return false;return JSON.parse(new TextDecoder().decode(unb64u(p))).exp>Math.floor(Date.now()/1000)}catch{return false}}
+const cookie=(v,age)=>`${COOKIE}=${v}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${age}`;
+async function asset(env,pathname,request){const u=new URL(request.url);u.pathname=pathname;u.search="";return env.ASSETS.fetch(new Request(u.toString(),{method:"GET",headers:request.headers}))}
+export default {async fetch(request,env){const u=new URL(request.url),path=u.pathname.replace(/\/+$/g,"")||"/",secret=env.ADMIN_PASSWORD;
+if(path==="/api/captcha"&&request.method==="GET"){if(!secret)return json({error:"ADMIN_PASSWORD Secret is not configured."},500);return json(await makeCaptcha(secret))}
+if(path==="/api/admin/login"&&request.method==="POST"){if(!secret)return json({error:"ADMIN_PASSWORD Secret is not configured."},500);let body;try{body=await request.json()}catch{return json({error:"درخواست نامعتبر است."},400)}const [c,p]=await Promise.all([checkCaptcha(secret,body.captchaToken,body.captchaAnswer),passwordMatch(secret,body.password)]);if(!c||!p)return json({error:"رمز عبور یا پاسخ کپچا اشتباه است. دوباره تلاش کن."},401);return json({ok:true},200,{"set-cookie":cookie(await signSession(secret),SESSION_SECONDS)})}
+if(path==="/api/admin/session"&&request.method==="GET")return json({authenticated:!!secret&&await hasSession(request,secret)});
+if(path==="/api/admin/logout"&&request.method==="POST")return json({ok:true},200,{"set-cookie":cookie("",0)});
+if(path==="/admin/login"){if(secret&&await hasSession(request,secret))return Response.redirect(new URL("/admin",request.url),303);return asset(env,"/admin-login.html",request)}
+if(path==="/admin"){if(!secret)return new Response("ADMIN_PASSWORD Secret در تنظیمات Worker تعریف نشده است.",{status:500});if(!await hasSession(request,secret))return Response.redirect(new URL("/admin/login",request.url),302);return asset(env,"/index.html",request)}
+if(path==="/admin/")return Response.redirect(new URL("/admin",request.url),301);
+return env.ASSETS.fetch(request)}};

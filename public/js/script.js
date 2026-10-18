@@ -5,7 +5,7 @@ function loadData(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch
 function saveData(){localStorage.setItem(KEY,JSON.stringify(data))}
 function setView(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo({top:0,behavior:"smooth"})}
 function isAdminPath(){return location.pathname.replace(/\/+$/,'').endsWith('/admin')}
-function route(){if(isAdminPath()){adminAllowed=true;document.getElementById('adminView').style.display='';renderAdmin();resetForm();setView('adminView')}else{adminAllowed=false;document.getElementById('adminView').style.display='none';showHome()}}
+async function route(){if(isAdminPath()){try{const r=await fetch('/api/admin/session',{cache:'no-store',credentials:'same-origin'});const s=await r.json();if(!s.authenticated){location.replace('/admin/login');return}}catch(e){location.replace('/admin/login');return}adminAllowed=true;document.getElementById('adminView').style.display='';renderAdmin();resetForm();setView('adminView')}else{adminAllowed=false;document.getElementById('adminView').style.display='none';showHome()}}
 function showHome(){if(isAdminPath()){history.pushState({},'',location.pathname.replace(/\/admin\/?$/,'/')||'/');adminAllowed=false}setView('homeView')}
 function switchSection(){openSection(currentSection==='cafe'?'games':'cafe')}
 function openSection(section){currentSection=section;const cafe=section==='cafe';document.getElementById('sectionEyebrow').textContent=cafe?'SEVEN CAFE MENU':'SEVEN GAME ZONE';document.getElementById('sectionTitle').innerHTML=(cafe?'منوی کافه':'گیم‌ها')+'<span>.</span>';document.getElementById('sectionDescription').textContent=cafe?'دسته نوشیدنی یا غذای موردنظرت رو انتخاب کن.':'بخش بازی موردنظرت رو انتخاب کن.';document.getElementById('switchSection').textContent=cafe?'گیم‌ها':'منوی کافه';const cats=cafe?CAFE:GAMES;document.getElementById('categoryGrid').innerHTML=cats.map((c,i)=>`<button class="category-card" onclick="openItems(${i})"><span class="category-symbol">${c.icon}</span><span class="category-copy"><strong>${c.name}</strong><small>${c.desc}</small></span><span class="category-arrow">←</span></button>`).join('');setView('categoryView')}
@@ -82,3 +82,4 @@ function money(n){return Number(n).toLocaleString('fa-IR')}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function escapeAttr(s){return escapeHtml(s)}
 window.addEventListener('popstate',route);route();
+async function logoutAdmin(){try{await fetch('/api/admin/logout',{method:'POST',credentials:'same-origin'});}catch(e){}location.assign('/admin/login');}
