@@ -1,11 +1,13 @@
-# SEVEN Cafe & Games V10 — Billiards People + Icon Polish
+# SEVEN Cafe & Games V11 — Espresso Subcategories
 
-## Changes
-- Billiards selection is now `۲ نفر` / `۴ نفر`, not `۲ چوب` / `۴ چوب`.
-- The label for billiards selection now says `تعداد نفرات`.
-- Billiards continues to use the selected duration (1–5 hours) to show the configured hourly price. The number of people does not multiply the table's hourly rate.
-- Brand mark, SEVEN wordmark, and category icon tiles are aligned and styled consistently across desktop and mobile.
-- Updated both `public/` deployed assets and the mirrored root files.
+- در پنل مدیریت، با انتخاب بخش «منوی کافه» گزینه «اسپرسو» به دسته‌ها اضافه شده است.
+- برای اسپرسو، نوع سرو «تک/دوبل» و ترکیب «80/20، 70/30، 90/10، 50/50، 100» قابل انتخاب است.
+- هر ترکیب را به‌صورت یک محصول جدا با نام، قیمت و تصویر ذخیره کنید.
+- در سایت مشتری، داخل «نوشیدنی گرم» یک کارت جدا برای «اسپرسو» نمایش داده می‌شود. با کلیک، اول تک/دوبل و سپس ترکیب قهوه انتخاب می‌شود و قیمت ثبت‌شده نشان داده می‌شود.
+- قابلیت‌های قبلی Worker login/CAPTCHA و بازی‌ها حفظ شده‌اند.
 
 ## Deploy
-Keep the folder structure. From the folder containing `wrangler.toml`, run `npx wrangler deploy`.
+همه فایل‌ها را با حفظ ساختار در مخزن قرار بده و از پوشه‌ای که `wrangler.toml` دارد `npx wrangler deploy` اجرا کن.
+
+## نکته ذخیره‌سازی
+اطلاعات منو همچنان در localStorage همان مرورگر ذخیره می‌شود؛ برای مشترک شدن قیمت‌ها بین دستگاه‌ها به پایگاه داده مشترک نیاز است.

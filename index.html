@@ -29,6 +29,7 @@
     <div class="switch-row"><button class="back-button" onclick="backToCategories()">→ بازگشت به منو</button><button class="switch-button" id="switchItems" onclick="switchSection()">گیم‌ها</button></div>
     <div class="section-heading"><span class="eyebrow" id="itemsEyebrow">SEVEN MENU</span><h1 id="itemsTitle">محصولات<span>.</span></h1><p id="itemsDescription">موارد این دسته</p></div>
     <div id="hourPicker" class="game-config hidden"><h2>انتخاب امکانات بازی</h2><p class="sub">ابتدا گزینه موردنظر و سپس مدت زمان را انتخاب کن؛ قیمت نهایی در پایان نمایش داده می‌شود.</p><div id="controllerChoice" class="choice-group"><span id="controllerLabel" class="choice-label">۱. تعداد دسته</span><div id="controllerButtons" class="choice-buttons"></div></div><div class="choice-group"><span class="choice-label">۲. مدت زمان بازی</span><div id="hourButtons" class="choice-buttons"></div></div><div id="priceResult" class="final-price hidden"><span>قیمت نهایی</span><strong id="finalPriceValue">—</strong></div></div>
+    <div id="espressoPicker" class="espresso-picker hidden"></div>
     <div id="productGrid" class="product-grid"></div>
     <div id="emptyState" class="empty-state"><span class="empty-icon">✦</span><h2>هنوز موردی ثبت نشده</h2><p>مدیر می‌تواند از بخش مدیریت، محصول و قیمت اضافه کند.</p></div>
   </section>
@@ -44,6 +45,14 @@
           <label>بخش<select id="itemSection"><option value="cafe">منوی کافه</option><option value="games">گیم‌ها</option></select></label>
           <label>دسته<select id="itemCategory"></select></label>
           <label>نام محصول / بازی<input id="itemName" required placeholder="مثلاً قهوه یا PS5"></label>
+          <div id="espressoFields" class="full espresso-admin-fields hidden">
+            <strong>تنظیمات اسپرسو</strong>
+            <div class="form-grid espresso-admin-grid">
+              <label>نوع سرو<select id="espressoSize"><option value="single">تک</option><option value="double">دوبل</option></select></label>
+              <label>ترکیب قهوه<select id="espressoBlend"><option value="80/20">80/20</option><option value="70/30">70/30</option><option value="90/10">90/10</option><option value="50/50">50/50</option><option value="100">100</option></select></label>
+            </div>
+            <small>برای هر ترکیب و نوع سرو، یک مورد جدا ثبت کن و قیمت و عکس آن را وارد کن.</small>
+          </div>
           <label>قیمت پایه (تومان)<input id="itemPrice" type="number" min="0" placeholder="مثلاً 150000"></label>
           <label class="full image-url-field">آدرس عکس (URL)<input id="itemImage" type="url" placeholder="https://example.com/photo.jpg"><small>اگر لینک عکس داری، اینجا وارد کن؛ یا از دستگاه انتخابش کن.</small></label>
           <div class="full upload-card" id="imageUploadCard">
