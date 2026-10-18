@@ -21,3 +21,10 @@ Added footer text: «طراحی و توسعه توسط Abolfazl». Clicking Abol
 The footer update is included in both `index.html` and `public/index.html`, with styling in both CSS copies. Existing features and Worker configuration are preserved.
 
 Deploy from the folder containing `wrangler.toml` using `npx wrangler deploy`.
+
+
+## V13 category descriptions
+- نوشیدنی گرم: هدیه ای گرم برای خودت
+- دسر: کامت رو شیرین کن
+- غذا: خودت رو شارژ کن
+- توضیح نوشیدنی سرد عمداً بدون تغییر باقی مانده است.
