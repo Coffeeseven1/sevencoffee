@@ -1,9 +1,7 @@
-# SEVEN Cafe & Games V6
+# SEVEN Cafe & Games V8 — Realistic Images
 
-- افزودن انتخاب عکس از دستگاه در پنل مدیریت، زیر فیلد URL عکس.
-- پیش‌نمایش عکس و امکان پاک‌کردن عکس انتخاب‌شده.
-- تصاویر فایل‌های انتخاب‌شده به JPEG فشرده تبدیل می‌شوند تا فضای ذخیره کمتری مصرف شود.
-- انتخاب فایل در همان مرورگر ذخیره می‌شود؛ این پروژه هنوز دیتابیس مشترک ندارد.
-- برای انتشار Cloudflare Workers از فایل‌های داخل `public/` استفاده می‌شود.
+- Updated the main cafe and gaming card backgrounds to locally stored photographic images.
+- Cloudflare Workers serves these from `public/assets/images/`.
+- Existing V7 navigation, categories, billiards/board-game options, pricing, image upload, and Worker routing are retained.
 
-Deploy: `npx wrangler deploy`
+Deploy with the same Cloudflare Workers workflow as V7. Keep `public/assets/images/`, `public/css/`, and `public/js/` in place.
