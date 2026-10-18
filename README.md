@@ -11,3 +11,13 @@
 
 ## نکته ذخیره‌سازی
 اطلاعات منو همچنان در localStorage همان مرورگر ذخیره می‌شود؛ برای مشترک شدن قیمت‌ها بین دستگاه‌ها به پایگاه داده مشترک نیاز است.
+
+
+## V12 footer credit
+# SEVEN Cafe & Games V12 — Footer credit
+
+Added footer text: «طراحی و توسعه توسط Abolfazl». Clicking Abolfazl opens https://abolfazlwebsite.ir/ in a new tab with `noopener noreferrer`.
+
+The footer update is included in both `index.html` and `public/index.html`, with styling in both CSS copies. Existing features and Worker configuration are preserved.
+
+Deploy from the folder containing `wrangler.toml` using `npx wrangler deploy`.
