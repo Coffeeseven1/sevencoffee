@@ -21,9 +21,9 @@ function renderGameChoices(){
  if(isBoardGame){controllerChoice.classList.add('hidden');}
  else {
    controllerChoice.classList.remove('hidden');
-   controllerLabel.textContent=isBilliards?'۱. تعداد چوب':'۱. تعداد دسته';
+   controllerLabel.textContent=isBilliards?'۱. تعداد نفرات':'۱. تعداد دسته';
    const options=isBilliards?[2,4]:[1,2,3,4];
-   controllerButtons.innerHTML=options.map(n=>`<button class="choice-button ${selectedControllers===n?'active':''}" onclick="selectControllers(${n})">${isBilliards?(n===2?'۲ چوب':'۴ چوب'):(n+' دسته')}</button>`).join('');
+   controllerButtons.innerHTML=options.map(n=>`<button class="choice-button ${selectedControllers===n?'active':''}" onclick="selectControllers(${n})">${isBilliards?(n===2?'۲ نفر':'۴ نفر'):(n+' دسته')}</button>`).join('');
  }
  document.getElementById('hourButtons').innerHTML=[1,2,3,4,5].map(h=>`<button class="choice-button ${selectedHours===h?'active':''}" onclick="selectHours(${h})">${h} ساعت</button>`).join('');
  updateFinalPrice();

@@ -38,3 +38,21 @@ body{margin:0;background:radial-gradient(ellipse at 50% -20%,#302016 0%,#171311 
 .cafe-image{background-color:#352116;background-image:url("../assets/images/cafe-real.jpg"),linear-gradient(135deg,#52331f,#0b0b0b);background-size:cover;background-position:center}
 
 .games-image{background-color:#260b10;background-image:url("../assets/images/games-real.jpg"),linear-gradient(135deg,#5a1018,#0b0b0b);background-size:cover;background-position:center}
+
+
+/* V10: consistent SEVEN brand and category icon system */
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;direction:ltr;flex-shrink:0}
+.brand-mark{width:48px;height:48px;display:grid;place-items:center;border:1.5px solid #f1c84b;border-radius:14px;background:linear-gradient(145deg,#252018,#111);color:#f1c84b;font-size:27px;font-weight:900;line-height:1;box-shadow:inset 0 0 0 3px #f1c84b0c,0 5px 18px #0004}
+.brand-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.1}
+.brand-copy strong{font-size:17px;font-weight:900;letter-spacing:2px;color:#f6f2e9}
+.brand-copy small{font-size:8px;letter-spacing:2px;font-weight:800;color:#f1c84b}
+.category-symbol{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;border-radius:16px;border:1px solid #f1c84b55;background:linear-gradient(145deg,#30231a,#191515);font-size:27px;line-height:1;box-shadow:inset 0 1px 0 #ffffff0d,0 6px 16px #0003}
+.category-card{display:flex;align-items:center;gap:15px;text-align:right;direction:rtl;overflow:hidden}
+.category-copy{min-width:0;flex:1}
+.category-copy strong{color:#f5f0e7;font-weight:800}
+.category-copy small{line-height:1.8}
+.category-arrow{flex:0 0 34px;align-self:center}
+.main-card .card-image{background-repeat:no-repeat;background-size:cover;background-position:center}
+.navbar .brand-mark{flex:0 0 48px}
+.footer{letter-spacing:.5px}
+@media(max-width:650px){.brand-mark{width:42px;height:42px;flex-basis:42px;font-size:24px}.brand-copy strong{font-size:15px}.category-symbol{width:50px;height:50px;flex-basis:50px;font-size:24px}.category-card{gap:11px}}
