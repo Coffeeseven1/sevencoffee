@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010"><title>SEVEN | کافه و گیم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="navbar">
+  <a class="brand" href="#" onclick="showHome();return false;"><span class="brand-mark">7</span><span class="brand-copy"><strong>SEVEN</strong><small>CAFE & GAMES</small></span></a>
+  <div class="nav-left"><span class="nav-note">منوی دیجیتال سون</span></div>
+</header>
+<main class="container">
+  <section id="homeView" class="view active">
+    <div class="hero"><span class="eyebrow"><i></i> به سون خوش اومدی</span><h1>انتخابت با توئه<span>.</span></h1><p>یه نوشیدنی دلچسب یا یه رقابت هیجان‌انگیز؟</p></div>
+    <div class="main-cards">
+      <button class="main-card" onclick="openSection('cafe')"><span class="card-image cafe-image"></span><span class="card-shade"></span><span class="card-content"><span class="card-icon">☕</span><span class="card-title">منوی کافه</span><span class="card-description">نوشیدنی‌های گرم و سرد، دسر و غذا</span><span class="card-action">مشاهده دسته‌بندی‌ها <b>←</b></span></span></button>
+      <button class="main-card" onclick="openSection('games')"><span class="card-image games-image"></span><span class="card-shade"></span><span class="card-content"><span class="card-icon">🎮</span><span class="card-title">گیم‌ها</span><span class="card-description">بازی کن، رقابت کن، لذت ببر</span><span class="card-action">مشاهده بازی‌ها <b>←</b></span></span></button>
+    </div><footer class="footer">SEVEN · CAFE & GAMES</footer>
+  </section>
+  <section id="categoryView" class="view">
+    <div class="switch-row"><button class="back-button" onclick="showHome()">→ بازگشت به منو</button><button class="switch-button" id="switchSection" onclick="switchSection()">گیم‌ها</button></div>
+    <div class="section-heading"><span class="eyebrow" id="sectionEyebrow">SEVEN MENU</span><h1 id="sectionTitle">منوی کافه<span>.</span></h1><p id="sectionDescription">دسته موردنظرت رو انتخاب کن.</p></div>
+    <div id="categoryGrid" class="category-grid"></div><footer class="footer">SEVEN · CAFE & GAMES</footer>
+  </section>
+  <section id="itemsView" class="view">
+    <div class="switch-row"><button class="back-button" onclick="backToCategories()">→ بازگشت به منو</button><button class="switch-button" id="switchItems" onclick="switchSection()">گیم‌ها</button></div>
+    <div class="section-heading"><span class="eyebrow" id="itemsEyebrow">SEVEN MENU</span><h1 id="itemsTitle">محصولات<span>.</span></h1><p id="itemsDescription">موارد این دسته</p></div>
+    <div id="hourPicker" class="game-config hidden"><h2>انتخاب امکانات بازی</h2><p class="sub">اول تعداد دسته، بعد مدت زمان را انتخاب کن.</p><div class="choice-group"><span class="choice-label">۱. تعداد دسته</span><div id="controllerButtons" class="choice-buttons"></div></div><div class="choice-group"><span class="choice-label">۲. مدت زمان بازی</span><div id="hourButtons" class="choice-buttons"></div></div><div id="priceResult" class="final-price hidden"><span>قیمت نهایی</span><strong id="finalPriceValue">—</strong></div></div>
+    <div id="productGrid" class="product-grid"></div>
+    <div id="emptyState" class="empty-state"><span class="empty-icon">✦</span><h2>هنوز موردی ثبت نشده</h2><p>مدیر می‌تواند از بخش مدیریت، محصول و قیمت اضافه کند.</p></div>
+  </section>
+  <section id="adminView" class="view">
+    <div class="switch-row"><button class="back-button" onclick="showHome()">→ بازگشت به سایت</button><span class="admin-label">پنل مدیریت سون</span></div>
+    <div class="section-heading"><span class="eyebrow">SEVEN ADMIN</span><h1>مدیریت منو و تعرفه‌ها<span>.</span></h1><p>محصولات، قیمت‌ها، تعرفه ساعت‌ها و تصویرها را ویرایش کن.</p></div>
+    <div class="admin-warning">نسخه اولیه: اطلاعات در همین مرورگر ذخیره می‌شود. برای مدیریت مشترک روی همه دستگاه‌ها و امنیت واقعی، اتصال به بک‌اند لازم است.</div>
+    <div class="admin-tabs"><button class="tab active" onclick="showAdminTab('products',this)">محصولات و تعرفه‌ها</button><button class="tab" onclick="showAdminTab('settings',this)">تنظیمات</button></div>
+    <div id="adminProducts">
+      <form id="productForm" class="admin-form">
+        <h2 id="formTitle">افزودن محصول / تعرفه</h2><input type="hidden" id="editId">
+        <div class="form-grid">
+          <label>بخش<select id="itemSection"><option value="cafe">منوی کافه</option><option value="games">گیم‌ها</option></select></label>
+          <label>دسته<select id="itemCategory"></select></label>
+          <label>نام محصول / بازی<input id="itemName" required placeholder="مثلاً قهوه یا PS5"></label>
+          <label>قیمت پایه (تومان)<input id="itemPrice" type="number" min="0" placeholder="مثلاً 150000"></label>
+          <label class="full">آدرس عکس (URL)<input id="itemImage" type="url" placeholder="https://..."></label>
+          <div id="gameRates" class="full game-rates"><strong>تعرفه گیم بر اساس ساعت (تومان)</strong><div class="rates-grid"><label>۱ ساعت<input id="rate1" type="number" min="0" placeholder="قیمت"></label><label>۲ ساعت<input id="rate2" type="number" min="0" placeholder="قیمت"></label><label>۳ ساعت<input id="rate3" type="number" min="0" placeholder="قیمت"></label><label>۴ ساعت<input id="rate4" type="number" min="0" placeholder="قیمت"></label><label>۵ ساعت<input id="rate5" type="number" min="0" placeholder="قیمت"></label></div></div>
+        </div>
+        <div class="form-actions"><button class="primary-button" type="submit">ذخیره</button><button class="back-button" type="button" onclick="resetForm()">پاک کردن فرم</button></div>
+      </form>
+      <div class="admin-list-head"><h2>موارد ثبت‌شده</h2><button class="danger-button" onclick="clearAll()">حذف همه</button></div><div id="adminList" class="admin-list"></div>
+    </div>
+    <div id="adminSettings" class="admin-form hidden"><h2>تنظیمات ظاهری</h2><p class="muted">تم مشکی، قرمز و زرد در این نسخه فعال است. لوگوی فعلی به‌صورت نوشتاری SEVEN است.</p><button class="back-button" onclick="exportData()">خروجی گرفتن از اطلاعات (JSON)</button><label class="import-label">وارد کردن فایل JSON<input type="file" accept="application/json" onchange="importData(event)"></label></div>
+  </section>
+</main>
+<script src="js/script.js"></script>
+</body></html>
