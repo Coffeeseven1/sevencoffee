@@ -10,12 +10,37 @@ function showHome(){if(isAdminPath()){history.pushState({},'',location.pathname.
 function switchSection(){openSection(currentSection==='cafe'?'games':'cafe')}
 function openSection(section){currentSection=section;const cafe=section==='cafe';document.getElementById('sectionEyebrow').textContent=cafe?'SEVEN CAFE MENU':'SEVEN GAME ZONE';document.getElementById('sectionTitle').innerHTML=(cafe?'منوی کافه':'گیم‌ها')+'<span>.</span>';document.getElementById('sectionDescription').textContent=cafe?'دسته نوشیدنی یا غذای موردنظرت رو انتخاب کن.':'بخش بازی موردنظرت رو انتخاب کن.';document.getElementById('switchSection').textContent=cafe?'گیم‌ها':'منوی کافه';const cats=cafe?CAFE:GAMES;document.getElementById('categoryGrid').innerHTML=cats.map((c,i)=>`<button class="category-card" onclick="openItems(${i})"><span class="category-symbol">${c.icon}</span><span class="category-copy"><strong>${c.name}</strong><small>${c.desc}</small></span><span class="category-arrow">←</span></button>`).join('');setView('categoryView')}
 function backToCategories(){openSection(currentSection)}
-function openItems(i){const cats=currentSection==='cafe'?CAFE:GAMES;currentCategory=cats[i].name;document.getElementById('itemsTitle').innerHTML=currentCategory+'<span>.</span>';document.getElementById('itemsEyebrow').textContent=currentSection==='cafe'?'SEVEN CAFE MENU':'SEVEN GAME ZONE';document.getElementById('itemsDescription').textContent='موارد ثبت‌شده در این دسته';document.getElementById('switchItems').textContent=currentSection==='cafe'?'گیم‌ها':'منوی کافه';document.getElementById('hourPicker').classList.toggle('hidden',currentSection!=='games');selectedControllers=1;selectedHours=1;renderProducts();renderGameChoices();setView('itemsView')}
+function openItems(i){const cats=currentSection==='cafe'?CAFE:GAMES;currentCategory=cats[i].name;document.getElementById('itemsTitle').innerHTML=currentCategory+'<span>.</span>';document.getElementById('itemsEyebrow').textContent=currentSection==='cafe'?'SEVEN CAFE MENU':'SEVEN GAME ZONE';document.getElementById('itemsDescription').textContent='موارد ثبت‌شده در این دسته';document.getElementById('switchItems').textContent=currentSection==='cafe'?'گیم‌ها':'منوی کافه';document.getElementById('hourPicker').classList.toggle('hidden',currentSection!=='games');selectedControllers=(currentCategory==='بیلیارد'?2:1);selectedHours=1;renderProducts();renderGameChoices();setView('itemsView')}
 function renderProducts(){const items=data.filter(x=>x.section===currentSection&&x.category===currentCategory);document.getElementById('productGrid').innerHTML=items.map(x=>`<article class="product-card">${x.image?`<img src="${escapeAttr(x.image)}" alt="${escapeAttr(x.name)}" onerror="this.style.display='none'">`:''}<div class="product-info"><h3>${escapeHtml(x.name)}</h3>${currentSection==='cafe'?`<span class="product-price">${x.price?money(x.price)+' تومان':'قیمت ثبت نشده'}</span>`:'<p>تعرفه با توجه به تعداد دسته و ساعت محاسبه می‌شود.</p>'}</div></article>`).join('');document.getElementById('emptyState').classList.toggle('hidden',items.length>0);if(currentSection==='games'&&!items.length){document.getElementById('emptyState').classList.remove('hidden');document.querySelector('#emptyState p').textContent='برای نمایش قیمت، تعرفه بازی را از پنل مدیریت ثبت کنید.'}}
-function renderGameChoices(){document.getElementById('controllerButtons').innerHTML=[1,2,3,4].map(n=>`<button class="choice-button ${selectedControllers===n?'active':''}" onclick="selectControllers(${n})">${n} دسته</button>`).join('');document.getElementById('hourButtons').innerHTML=[1,2,3,4,5].map(h=>`<button class="choice-button ${selectedHours===h?'active':''}" onclick="selectHours(${h})">${h} ساعت</button>`).join('');updateFinalPrice()}
+function renderGameChoices(){
+ const controllerChoice=document.getElementById('controllerChoice');
+ const controllerLabel=document.getElementById('controllerLabel');
+ const controllerButtons=document.getElementById('controllerButtons');
+ const isBilliards=currentCategory==='بیلیارد';
+ const isBoardGame=currentCategory==='بردگیم';
+ if(isBoardGame){controllerChoice.classList.add('hidden');}
+ else {
+   controllerChoice.classList.remove('hidden');
+   controllerLabel.textContent=isBilliards?'۱. تعداد چوب':'۱. تعداد دسته';
+   const options=isBilliards?[2,4]:[1,2,3,4];
+   controllerButtons.innerHTML=options.map(n=>`<button class="choice-button ${selectedControllers===n?'active':''}" onclick="selectControllers(${n})">${isBilliards?(n===2?'۲ چوب':'۴ چوب'):(n+' دسته')}</button>`).join('');
+ }
+ document.getElementById('hourButtons').innerHTML=[1,2,3,4,5].map(h=>`<button class="choice-button ${selectedHours===h?'active':''}" onclick="selectHours(${h})">${h} ساعت</button>`).join('');
+ updateFinalPrice();
+}
 function selectControllers(n){selectedControllers=n;renderGameChoices()}
 function selectHours(n){selectedHours=n;renderGameChoices()}
-function updateFinalPrice(){const result=document.getElementById('priceResult'),value=document.getElementById('finalPriceValue');if(!result||!value)return;result.classList.remove('hidden');const item=data.find(x=>x.section==='games'&&x.category===currentCategory);if(!item){value.textContent='تعرفه ثبت نشده';return}let price=Number(item.controllerRates?.[selectedControllers]?.[selectedHours]||0);if(!price){const rate=Number(item.rates?.[selectedHours]||0);price=rate?rate*selectedControllers:0}value.textContent=price?money(price)+' تومان':'تعرفه ثبت نشده'}
+function updateFinalPrice(){
+ const result=document.getElementById('priceResult'),value=document.getElementById('finalPriceValue');
+ if(!result||!value)return;result.classList.remove('hidden');
+ const item=data.find(x=>x.section==='games'&&x.category===currentCategory);
+ if(!item){value.textContent='تعرفه ثبت نشده';return}
+ const rate=Number(item.rates?.[selectedHours]||0);
+ let price=0;
+ if(currentCategory==='بیلیارد'||currentCategory==='بردگیم') price=rate;
+ else {price=Number(item.controllerRates?.[selectedControllers]?.[selectedHours]||0);if(!price)price=rate?rate*selectedControllers:0;}
+ value.textContent=price?money(price)+' تومان':'تعرفه ثبت نشده';
+}
 function openAdmin(fromRoute=false){if(!fromRoute&&!isAdminPath()){location.href='/admin';return}adminAllowed=true;document.getElementById('adminView').style.display='';renderAdmin();resetForm();setView('adminView')}
 function showAdminTab(which,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.getElementById('adminProducts').classList.toggle('hidden',which!=='products');document.getElementById('adminSettings').classList.toggle('hidden',which!=='settings')}
 function updateCategoryOptions(){const sec=document.getElementById('itemSection').value;document.getElementById('itemCategory').innerHTML=(sec==='cafe'?CAFE:GAMES).map(c=>`<option>${c.name}</option>`).join('');document.getElementById('gameRates').classList.toggle('hidden',sec!=='games');document.getElementById('itemPrice').parentElement.classList.toggle('hidden',sec==='games')}
